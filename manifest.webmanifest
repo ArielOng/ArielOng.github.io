@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "Ariel Ong",
+  "short_name": "Ariel Ong",
+  "description": "Ariel Ong's personal corner of the web: a golden pineapple, red lanterns and the Singapore skyline at dusk, with something new quietly on the way.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0b1026",
+  "background_color": "#070a1f",
+  "lang": "en",
+  "categories": ["personal"],
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

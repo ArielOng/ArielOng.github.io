@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#1b2256"/><stop offset="1" stop-color="#070a1f"/>
+    </radialGradient>
+    <radialGradient id="body" cx="42%" cy="38%" r="70%">
+      <stop offset="0" stop-color="#ffd978"/><stop offset=".55" stop-color="#f0a92e"/><stop offset="1" stop-color="#b8661a"/>
+    </radialGradient>
+    <linearGradient id="leafg" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#1f6b3a"/><stop offset=".6" stop-color="#3fa85a"/><stop offset="1" stop-color="#8fe08a"/>
+    </linearGradient>
+    <pattern id="lattice" width="22" height="26" patternUnits="userSpaceOnUse">
+      <path d="M0 13 L11 0 L22 13 L11 26 Z" fill="none" stroke="#8a4a10" stroke-opacity=".55" stroke-width="2"/>
+      <circle cx="11" cy="13" r="2.2" fill="#7a3f0c" fill-opacity=".5"/>
+    </pattern>
+    <clipPath id="bodyclip"><path d="M100 118 C150 118 166 160 166 205 C166 255 138 288 100 288 C62 288 34 255 34 205 C34 160 50 118 100 118 Z"/></clipPath>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="256" cy="290" r="130" fill="#ffcf6b" fill-opacity=".18"/>
+  <!-- pineapple centred inside the 60% safe zone: 200x300 scaled to ~0.92 -->
+  <g transform="translate(164 118) scale(.92)">
+    <path d="M100 118 C70 100 44 60 40 18 C72 34 96 70 100 118 Z" fill="url(#leafg)"/>
+    <path d="M100 118 C130 100 156 60 160 18 C128 34 104 70 100 118 Z" fill="url(#leafg)"/>
+    <path d="M100 118 C84 92 72 50 78 6 C98 34 104 76 100 118 Z" fill="url(#leafg)"/>
+    <path d="M100 118 C116 92 128 50 122 6 C102 34 96 76 100 118 Z" fill="url(#leafg)"/>
+    <path d="M100 118 C98 86 96 40 100 0 C104 40 102 86 100 118 Z" fill="url(#leafg)"/>
+    <path d="M100 118 C72 108 50 92 32 70 C60 76 86 94 100 118 Z" fill="url(#leafg)"/>
+    <path d="M100 118 C128 108 150 92 168 70 C140 76 114 94 100 118 Z" fill="url(#leafg)"/>
+    <path d="M100 118 C150 118 166 160 166 205 C166 255 138 288 100 288 C62 288 34 255 34 205 C34 160 50 118 100 118 Z" fill="url(#body)"/>
+    <rect x="30" y="112" width="140" height="180" fill="url(#lattice)" clip-path="url(#bodyclip)"/>
+    <ellipse cx="74" cy="170" rx="18" ry="34" fill="#fff" fill-opacity=".16" transform="rotate(-12 74 170)"/>
+  </g>
+</svg>

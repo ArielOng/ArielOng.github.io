@@ -1,1 +1,662 @@
-Hello, I'm Ariel
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ariel Ong</title>
+<meta name="description" content="Ariel Ong's personal corner of the web: a golden pineapple, red lanterns and the Singapore skyline at dusk, with something new quietly on the way.">
+<link rel="canonical" href="https://ariel.ong/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ariel Ong">
+<meta property="og:title" content="Ariel Ong">
+<meta property="og:description" content="Ariel Ong's personal corner of the web: a golden pineapple, red lanterns and the Singapore skyline at dusk, with something new quietly on the way.">
+<meta property="og:url" content="https://ariel.ong/">
+<meta property="og:image" content="https://ariel.ong/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A glowing golden pineapple floating over the Singapore skyline at night, framed by red lanterns and drifting orchid petals.">
+<meta property="og:locale" content="en_SG">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ariel Ong">
+<meta name="twitter:description" content="Ariel Ong's personal corner of the web: a golden pineapple, red lanterns and the Singapore skyline at dusk, with something new quietly on the way.">
+<meta name="twitter:image" content="https://ariel.ong/assets/og-image.jpg">
+<meta name="twitter:image:alt" content="A glowing golden pineapple floating over the Singapore skyline at night, framed by red lanterns and drifting orchid petals.">
+
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b1026">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ariel Ong">
+
+<style>
+/* Registered so the sky can cross-fade when the clock or the switch moves it */
+@property --sky-top { syntax: '<color>'; inherits: true; initial-value: #070a1f; }
+@property --sky-mid { syntax: '<color>'; inherits: true; initial-value: #141a4a; }
+@property --sky-low { syntax: '<color>'; inherits: true; initial-value: #3a2a5c; }
+@property --horizon { syntax: '<color>'; inherits: true; initial-value: #c2607a; }
+@property --water { syntax: '<color>'; inherits: true; initial-value: #0d1540; }
+@property --water-deep { syntax: '<color>'; inherits: true; initial-value: #05081c; }
+@property --star-opacity { syntax: '<number>'; inherits: true; initial-value: 1; }
+@property --moon-opacity { syntax: '<number>'; inherits: true; initial-value: 1; }
+@property --sun-opacity { syntax: '<number>'; inherits: true; initial-value: 0; }
+:root { transition: --sky-top 1.6s ease, --sky-mid 1.6s ease, --sky-low 1.6s ease, --horizon 1.6s ease, --water 1.6s ease, --water-deep 1.6s ease, --star-opacity 1.6s ease, --moon-opacity 1.6s ease, --sun-opacity 1.6s ease; }
+:root {
+  --sky-top: #070a1f;
+  --sky-mid: #141a4a;
+  --sky-low: #3a2a5c;
+  --horizon: #c2607a;
+  --water: #0d1540;
+  --water-deep: #05081c;
+  --city: #0a0c22;
+  --city-far: #1d1f4d;
+  --window: #ffd98a;
+  --glow: #ffcf6b;
+  --petal: #c77dff;
+  --petal-2: #ff9ec4;
+  --star-opacity: 1;
+  --moon-opacity: 1;
+  --sun-opacity: 0;
+  --lantern-glow: .85;
+  --mote: 255, 207, 107;
+  --btn-bg: rgba(255,255,255,.08);
+  --btn-bg-hover: rgba(255,255,255,.18);
+  --btn-fg: #ffe9b8;
+  --page-bg: var(--sky-top);
+}
+:root[data-theme="light"] {
+  --sky-top: #8ecbf2;
+  --sky-mid: #cfe7fa;
+  --sky-low: #ffe3c2;
+  --horizon: #ffb98a;
+  --water: #7fb8de;
+  --water-deep: #4e8fc0;
+  --city: #4f6b8f;
+  --city-far: #9bb7d4;
+  --window: #ffffff;
+  --glow: #ffd36b;
+  --petal: #b65fe6;
+  --petal-2: #ff7fb0;
+  --star-opacity: 0;
+  --moon-opacity: 0;
+  --sun-opacity: 1;
+  --lantern-glow: .35;
+  --mote: 255, 255, 255;
+  --btn-bg: rgba(0,0,0,.08);
+  --btn-bg-hover: rgba(0,0,0,.16);
+  --btn-fg: #3a2a16;
+  --page-bg: var(--sky-top);
+}
+
+/* No overscroll bounce, no white edge. Nothing scrolls on this page. */
+html { height: 100%; overflow: hidden; background: var(--page-bg); overscroll-behavior: none; }
+body { height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; font-family: system-ui, sans-serif; }
+* { box-sizing: border-box; }
+
+.scene {
+  position: fixed; inset: 0; overflow: hidden;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 42%, var(--sky-low) 66%, var(--horizon) 78%, var(--water) 79%, var(--water-deep) 100%);
+  transition: background 1.6s ease;
+  animation: fade-in 1.8s ease both;
+}
+.layer { position: absolute; inset: -4%; width: 108%; height: 108%; pointer-events: none; will-change: transform; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+
+/* Stars: compass heading turns the sky */
+.stars { opacity: var(--star-opacity); transition: opacity 1.6s ease, rotate 1.2s ease; rotate: var(--heading, 0deg); transform-origin: 50% 120%; }
+.stars i {
+  position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff;
+  animation: twinkle var(--d, 3s) ease-in-out var(--delay, 0s) infinite alternate;
+}
+@keyframes twinkle { from { opacity: .15; transform: scale(.7); } to { opacity: .95; transform: scale(1.2); } }
+
+/* Moon and sun */
+/* Moon and sun travel an arc set by Singapore time */
+.moon, .sun { position: absolute; width: clamp(64px, 9vmin, 120px); height: clamp(64px, 9vmin, 120px); border-radius: 50%; transition: opacity 1.6s ease, top 2s ease, left 2s ease; transform: translate(-50%, -50%); }
+.moon {
+  left: var(--moon-x, 85%); top: var(--moon-y, 16%);
+  background: radial-gradient(circle at 38% 36%, #fff7dc 0%, #f4e2a8 55%, #d9c27b 100%);
+  box-shadow: 0 0 40px 10px rgba(255, 240, 190, .35), 0 0 140px 40px rgba(255, 220, 150, .18);
+  opacity: var(--moon-opacity); overflow: hidden;
+}
+.moon::after { content: ""; position: absolute; left: 18%; top: 22%; width: 22%; height: 22%; border-radius: 50%; background: rgba(170,150,100,.25); box-shadow: 34% 46% 0 -2px rgba(170,150,100,.22), -4% 52% 0 -5px rgba(170,150,100,.2); }
+/* lunar phase: a shadow disc slides across the face */
+.moon::before { content: ""; position: absolute; inset: -6%; border-radius: 50%; background: var(--sky-mid); opacity: .92; transform: translateX(var(--phase-x, 100%)); transition: transform 2s ease, background 1.6s ease; }
+.sun {
+  left: var(--sun-x, 20%); top: var(--sun-y, 110%);
+  background: radial-gradient(circle, #fff6d0 0%, #ffd56a 55%, #ffb347 100%);
+  box-shadow: 0 0 60px 20px rgba(255, 214, 120, .55), 0 0 200px 80px rgba(255, 190, 90, .25);
+  opacity: var(--sun-opacity);
+}
+
+/* Clouds / mist */
+.mist { position: absolute; left: -20%; bottom: 20%; width: 140%; height: 18%; opacity: .55; filter: blur(14px);
+  background: radial-gradient(ellipse 30% 60% at 20% 50%, rgba(255,255,255,.18), transparent 70%),
+              radial-gradient(ellipse 25% 60% at 55% 60%, rgba(255,255,255,.14), transparent 70%),
+              radial-gradient(ellipse 30% 60% at 85% 40%, rgba(255,255,255,.16), transparent 70%);
+  animation: drift 60s linear infinite; }
+@keyframes drift { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
+
+/* Skyline */
+.skyline { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; }
+.skyline svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; }
+.c-far { fill: var(--city-far); transition: fill 1.6s ease; }
+.c-near { fill: var(--city); transition: fill 1.6s ease; }
+.win { fill: var(--window); opacity: .85; animation: win-blink 6s ease-in-out infinite alternate; }
+:root[data-theme="light"] .win { opacity: .25; }
+@keyframes win-blink { 0%, 80% { opacity: .85; } 90% { opacity: .35; } 100% { opacity: .9; } }
+:root[data-theme="light"] .win { animation: none; }
+.flyer { transform-origin: 1395px 165px; animation: spin 90s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tree-glow { fill: var(--glow); opacity: .55; filter: url(#soft); animation: breathe 5s ease-in-out infinite alternate; }
+:root[data-theme="light"] .tree-glow { opacity: .15; }
+.reflect { fill: url(#refl); opacity: .7; animation: shimmer 4s ease-in-out infinite alternate; }
+@keyframes shimmer { from { opacity: .45; transform: scaleY(1); } to { opacity: .8; transform: scaleY(1.04); } }
+
+/* Lanterns */
+.lantern { position: absolute; top: -2%; width: clamp(54px, 7vmin, 96px); transform-origin: 50% 0; animation: sway 6s ease-in-out infinite alternate; filter: drop-shadow(0 0 18px rgba(255, 90, 60, var(--lantern-glow))); transition: filter 1.6s ease, rotate .5s ease; rotate: var(--lean, 0deg); }
+.lantern.l1 { left: 7%; --amp: 3deg; animation-duration: 6.5s; }
+.lantern.l2 { left: 16%; top: -6%; width: clamp(40px, 5.5vmin, 76px); --amp: 4deg; animation-duration: 7.8s; animation-delay: -2s; }
+.lantern.l3 { right: 8%; --amp: 3.5deg; animation-duration: 7s; animation-delay: -4s; }
+.lantern.l4 { right: 17%; top: -7%; width: clamp(40px, 5.5vmin, 76px); --amp: 4deg; animation-duration: 8.4s; animation-delay: -1s; }
+@keyframes sway { from { transform: rotate(calc(var(--amp) * -1)); } to { transform: rotate(var(--amp)); } }
+@media (max-width: 640px) { .lantern.l2, .lantern.l4 { display: none; } .lantern.l1 { left: 5%; } .lantern.l3 { right: 5%; } }
+
+/* Pineapple */
+.hero { position: absolute; inset: 0; width: 100%; height: 100%; display: grid; place-items: center; pointer-events: none; }
+.hero-wrap { position: relative; width: min(52vmin, 360px); aspect-ratio: 2 / 3; display: grid; place-items: center; animation: rise 2.4s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(6vmin) scale(.94); } to { opacity: 1; transform: none; } }
+@media (orientation: portrait) { .hero-wrap { margin-bottom: 14vh; width: min(50vmin, 78vw, 360px); } }
+.halo { position: absolute; inset: -30%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 207, 107, .45) 0%, rgba(255, 207, 107, .12) 35%, transparent 62%); animation: breathe 4.5s ease-in-out infinite alternate; }
+:root[data-theme="light"] .halo { background: radial-gradient(circle, rgba(255, 220, 120, .55) 0%, rgba(255, 220, 120, .15) 35%, transparent 62%); }
+@keyframes breathe { from { transform: scale(.94); opacity: .8; } to { transform: scale(1.06); opacity: 1; } }
+.pineapple { position: relative; width: 100%; height: 100%; animation: float 6s ease-in-out infinite alternate; filter: drop-shadow(0 18px 30px rgba(0,0,0,.35)); transform-origin: 50% 90%; }
+@keyframes float { from { transform: translateY(-1.2%); } to { transform: translateY(1.4%); } }
+/* a shake of the phone makes it wobble */
+.pineapple.wobble { animation: wobble 1.1s cubic-bezier(.3,1.6,.4,1) 1, float 6s ease-in-out 1.1s infinite alternate; }
+@keyframes wobble { 0% { rotate: 0deg; } 20% { rotate: -7deg; } 45% { rotate: 5deg; } 70% { rotate: -2.5deg; } 100% { rotate: 0deg; } }
+.leaf { transform-origin: 100px 118px; animation: leaf-sway 5s ease-in-out infinite alternate; }
+.leaf:nth-child(2n) { animation-duration: 6.2s; animation-delay: -1.5s; }
+.leaf:nth-child(3n) { animation-duration: 5.6s; animation-delay: -3s; }
+@keyframes leaf-sway { from { transform: rotate(-1.5deg); } to { transform: rotate(1.5deg); } }
+.shine { animation: shine 7s ease-in-out infinite; }
+@keyframes shine { 0%, 60%, 100% { opacity: 0; transform: translateX(-70px) skewX(-18deg); } 75% { opacity: .55; } 90% { opacity: 0; transform: translateX(90px) skewX(-18deg); } }
+
+/* Three breathing dots: something is on its way */
+.soon { position: absolute; left: 50%; bottom: -11%; transform: translateX(-50%); display: flex; gap: clamp(8px, 1.4vmin, 14px); }
+.soon i { width: clamp(6px, 1.1vmin, 10px); height: clamp(6px, 1.1vmin, 10px); border-radius: 50%; background: var(--glow); box-shadow: 0 0 10px 2px rgba(255, 207, 107, .55); animation: dot 2.1s ease-in-out infinite; }
+.soon i:nth-child(2) { animation-delay: .3s; }
+.soon i:nth-child(3) { animation-delay: .6s; }
+@keyframes dot { 0%, 70%, 100% { opacity: .25; transform: scale(.75); } 25% { opacity: 1; transform: scale(1.1); } }
+
+/* Petals */
+.petals { position: absolute; inset: 0; overflow: hidden; translate: var(--wind, 0px) 0; transition: translate 1.2s ease; }
+.petal.burst { top: 50%; left: 50%; --delay: 0s !important; animation: burst 2.6s cubic-bezier(.1,.7,.3,1) 1 forwards; }
+@keyframes burst { 0% { transform: translate(0, 0) scale(.4); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate(var(--bx), var(--by)) scale(1); opacity: 0; } }
+.petal { position: absolute; top: -8%; width: 14px; height: 20px; opacity: 0; animation: fall var(--t, 16s) linear var(--delay, 0s) infinite; }
+.petal svg { width: 100%; height: 100%; animation: tumble var(--r, 5s) ease-in-out infinite alternate; }
+@keyframes fall { 0% { transform: translate(0, 0); opacity: 0; } 8% { opacity: .9; } 90% { opacity: .9; } 100% { transform: translate(var(--dx, 60px), 112vh); opacity: 0; } }
+@keyframes tumble { from { transform: rotate(-40deg) scaleX(1); } to { transform: rotate(50deg) scaleX(.6); } }
+
+/* Seal chop */
+.seal { position: fixed; right: max(18px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom)); width: clamp(44px, 6vmin, 64px); transform: rotate(-6deg); opacity: .92; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); animation: fade-in 2s ease 1.2s both; }
+
+/* Corner cloud scrolls */
+.corner { position: fixed; width: clamp(48px, 7vmin, 90px); opacity: .35; fill: none; stroke: var(--glow); stroke-width: 2; stroke-linecap: round; animation: fade-in 2s ease 1.4s both; }
+.corner.tl { top: 14px; left: 14px; }
+.corner.bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+
+/* Particle canvas */
+canvas.motes { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* ambient light: bright rooms get a slightly lifted scene */
+.ambient { position: fixed; inset: 0; pointer-events: none; background: #fff; opacity: var(--ambient, 0); transition: opacity 2s ease; mix-blend-mode: soft-light; }
+
+/* Theme switch (icon only) */
+.theme-btn {
+  position: fixed; top: max(16px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right));
+  width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--btn-bg); color: var(--btn-fg); display: grid; place-items: center;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: background .25s ease, box-shadow .25s ease; z-index: 10;
+  animation: fade-in 2s ease 2s both;
+}
+.theme-btn:hover { background: var(--btn-bg-hover); box-shadow: 0 0 0 4px rgba(255, 207, 107, .18); }
+.theme-btn:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+.theme-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.theme-btn .ico-sun { display: block; }
+.theme-btn .ico-moon { display: none; }
+:root[data-theme="light"] .theme-btn .ico-sun { display: none; }
+:root[data-theme="light"] .theme-btn .ico-moon { display: block; }
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .petal { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="scene" id="scene">
+  <div class="layer stars" data-depth="0.5" id="stars"></div>
+
+  <div class="layer" data-depth="1">
+    <div class="moon"></div>
+    <div class="sun"></div>
+  </div>
+
+  <div class="layer" data-depth="1.6"><div class="mist"></div></div>
+
+  <div class="layer skyline" data-depth="2.4">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+        <linearGradient id="refl" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd98a" stop-opacity=".35"/>
+          <stop offset="1" stop-color="#ffd98a" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <!-- far city blocks -->
+      <g class="c-far">
+        <rect x="0" y="660" width="90" height="60"/><rect x="110" y="640" width="60" height="80"/>
+        <rect x="190" y="672" width="120" height="48"/><rect x="560" y="650" width="50" height="70"/>
+        <rect x="620" y="620" width="70" height="100"/><rect x="700" y="665" width="90" height="55"/>
+        <rect x="810" y="612" width="48" height="108"/><rect x="870" y="645" width="60" height="75"/>
+        <rect x="1340" y="668" width="60" height="52"/><rect x="1500" y="640" width="60" height="80"/>
+        <rect x="1565" y="660" width="40" height="60"/>
+      </g>
+
+      <!-- Supertrees -->
+      <g class="c-near">
+        <g transform="translate(330 0)">
+          <ellipse class="tree-glow" cx="0" cy="560" rx="48" ry="26"/>
+          <path d="M-6 720 L-4 575 Q0 555 4 575 L6 720 Z"/>
+          <path d="M-44 572 Q-30 530 0 528 Q30 530 44 572 L36 580 Q20 548 0 548 Q-20 548 -36 580 Z"/>
+          <path d="M-30 560 L-6 600 M30 560 L6 600 M0 545 L0 600" stroke="currentColor" stroke-width="3" fill="none" style="color: var(--city)"/>
+        </g>
+        <g transform="translate(420 0) scale(.78)">
+          <ellipse class="tree-glow" cx="0" cy="560" rx="48" ry="26"/>
+          <path d="M-6 920 L-4 575 Q0 555 4 575 L6 920 Z"/>
+          <path d="M-44 572 Q-30 530 0 528 Q30 530 44 572 L36 580 Q20 548 0 548 Q-20 548 -36 580 Z"/>
+        </g>
+        <g transform="translate(260 0) scale(.66)">
+          <ellipse class="tree-glow" cx="0" cy="560" rx="48" ry="26"/>
+          <path d="M-6 1090 L-4 575 Q0 555 4 575 L6 1090 Z"/>
+          <path d="M-44 572 Q-30 530 0 528 Q30 530 44 572 L36 580 Q20 548 0 548 Q-20 548 -36 580 Z"/>
+        </g>
+        <!-- connecting walkway -->
+        <path d="M260 600 Q330 585 420 600" stroke="currentColor" stroke-width="3" fill="none" style="color: var(--city)"/>
+      </g>
+
+      <!-- ArtScience lotus -->
+      <g class="c-near" transform="translate(1000 0)">
+        <path d="M0 720 L0 690 M0 690 Q-55 660 -70 600 Q-40 625 -22 672 Q-30 620 -10 580 Q-2 630 0 690 Q2 630 10 580 Q30 620 22 672 Q40 625 70 600 Q55 660 0 690 Z"/>
+        <path d="M-80 720 Q0 700 80 720 Z"/>
+      </g>
+
+      <!-- Marina Bay Sands -->
+      <g class="c-near">
+        <path d="M1110 720 L1118 500 L1158 500 L1152 720 Z"/>
+        <path d="M1180 720 L1188 500 L1228 500 L1222 720 Z"/>
+        <path d="M1250 720 L1258 500 L1298 500 L1292 720 Z"/>
+        <path d="M1100 500 Q1200 470 1330 492 L1332 506 Q1200 486 1100 514 Z"/>
+        <g class="win">
+          <rect x="1126" y="530" width="4" height="6"/><rect x="1140" y="560" width="4" height="6"/><rect x="1132" y="610" width="4" height="6"/><rect x="1144" y="660" width="4" height="6"/>
+          <rect x="1196" y="540" width="4" height="6"/><rect x="1210" y="590" width="4" height="6"/><rect x="1200" y="640" width="4" height="6"/><rect x="1214" y="690" width="4" height="6"/>
+          <rect x="1266" y="525" width="4" height="6"/><rect x="1280" y="575" width="4" height="6"/><rect x="1270" y="630" width="4" height="6"/><rect x="1284" y="680" width="4" height="6"/>
+          <rect x="640" y="640" width="4" height="6"/><rect x="660" y="670" width="4" height="6"/><rect x="826" y="630" width="4" height="6"/><rect x="836" y="680" width="4" height="6"/>
+        </g>
+      </g>
+
+      <!-- Singapore Flyer -->
+      <g class="c-near">
+        <path d="M1372 720 L1395 600 L1418 720 Z"/>
+        <g class="flyer" fill="none" stroke="currentColor" style="color: var(--city)">
+          <circle cx="1395" cy="165" r="0"/>
+          <g transform="translate(1395 600)">
+            <circle r="110" stroke-width="5"/>
+            <circle r="100" stroke-width="1.5"/>
+            <g stroke-width="2">
+              <path d="M0 -110 L0 110 M-110 0 L110 0 M-78 -78 L78 78 M-78 78 L78 -78"/>
+              <path d="M0 -110 L0 110 M-110 0 L110 0 M-78 -78 L78 78 M-78 78 L78 -78" transform="rotate(22.5)"/>
+            </g>
+            <g class="win" stroke="none">
+              <circle cx="0" cy="-110" r="4"/><circle cx="78" cy="-78" r="4"/><circle cx="110" cy="0" r="4"/><circle cx="78" cy="78" r="4"/>
+              <circle cx="0" cy="110" r="4"/><circle cx="-78" cy="78" r="4"/><circle cx="-110" cy="0" r="4"/><circle cx="-78" cy="-78" r="4"/>
+            </g>
+          </g>
+        </g>
+      </g>
+
+      <!-- shoreline + water reflections -->
+      <rect class="c-near" x="0" y="716" width="1600" height="10"/>
+      <g class="reflect" style="transform-origin: 800px 726px">
+        <rect x="1112" y="726" width="40" height="120"/><rect x="1182" y="726" width="40" height="110"/><rect x="1252" y="726" width="40" height="130"/>
+        <rect x="320" y="726" width="20" height="90"/><rect x="412" y="726" width="14" height="70"/><rect x="1380" y="726" width="30" height="100"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="layer petals" data-depth="3.2" id="petals"></div>
+
+  <div class="layer" data-depth="4">
+    <svg class="lantern l1" viewBox="0 0 100 170" aria-hidden="true"><use href="#lantern-shape"/></svg>
+    <svg class="lantern l2" viewBox="0 0 100 170" aria-hidden="true"><use href="#lantern-shape"/></svg>
+    <svg class="lantern l3" viewBox="0 0 100 170" aria-hidden="true"><use href="#lantern-shape"/></svg>
+    <svg class="lantern l4" viewBox="0 0 100 170" aria-hidden="true"><use href="#lantern-shape"/></svg>
+  </div>
+
+  <div class="hero layer" data-depth="5">
+    <div class="hero-wrap">
+      <div class="halo"></div>
+      <svg class="pineapple" viewBox="0 0 200 300" aria-hidden="true">
+        <defs>
+          <radialGradient id="body" cx="42%" cy="38%" r="70%">
+            <stop offset="0" stop-color="#ffd978"/><stop offset=".55" stop-color="#f0a92e"/><stop offset="1" stop-color="#b8661a"/>
+          </radialGradient>
+          <linearGradient id="leafg" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#1f6b3a"/><stop offset=".6" stop-color="#3fa85a"/><stop offset="1" stop-color="#8fe08a"/>
+          </linearGradient>
+          <pattern id="lattice" width="22" height="26" patternUnits="userSpaceOnUse" patternTransform="translate(0 4)">
+            <path d="M0 13 L11 0 L22 13 L11 26 Z" fill="none" stroke="#8a4a10" stroke-opacity=".55" stroke-width="2"/>
+            <circle cx="11" cy="13" r="2.2" fill="#7a3f0c" fill-opacity=".5"/>
+            <path d="M11 6 L11 10" stroke="#ffe9a8" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round"/>
+          </pattern>
+          <clipPath id="bodyclip"><path d="M100 118 C150 118 166 160 166 205 C166 255 138 288 100 288 C62 288 34 255 34 205 C34 160 50 118 100 118 Z"/></clipPath>
+        </defs>
+        <g class="crown">
+          <path class="leaf" d="M100 118 C70 100 44 60 40 18 C72 34 96 70 100 118 Z" fill="url(#leafg)"/>
+          <path class="leaf" d="M100 118 C130 100 156 60 160 18 C128 34 104 70 100 118 Z" fill="url(#leafg)"/>
+          <path class="leaf" d="M100 118 C84 92 72 50 78 6 C98 34 104 76 100 118 Z" fill="url(#leafg)"/>
+          <path class="leaf" d="M100 118 C116 92 128 50 122 6 C102 34 96 76 100 118 Z" fill="url(#leafg)"/>
+          <path class="leaf" d="M100 118 C98 86 96 40 100 0 C104 40 102 86 100 118 Z" fill="url(#leafg)"/>
+          <path class="leaf" d="M100 118 C72 108 50 92 32 70 C60 76 86 94 100 118 Z" fill="url(#leafg)"/>
+          <path class="leaf" d="M100 118 C128 108 150 92 168 70 C140 76 114 94 100 118 Z" fill="url(#leafg)"/>
+        </g>
+        <path d="M100 118 C150 118 166 160 166 205 C166 255 138 288 100 288 C62 288 34 255 34 205 C34 160 50 118 100 118 Z" fill="url(#body)"/>
+        <rect x="30" y="112" width="140" height="180" fill="url(#lattice)" clip-path="url(#bodyclip)"/>
+        <ellipse cx="74" cy="170" rx="18" ry="34" fill="#fff" fill-opacity=".16" transform="rotate(-12 74 170)"/>
+        <g clip-path="url(#bodyclip)"><rect class="shine" x="60" y="110" width="26" height="190" fill="#fff" fill-opacity=".35"/></g>
+      </svg>
+      <div class="soon" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</div>
+
+<canvas class="motes" id="motes" aria-hidden="true"></canvas>
+<div class="ambient" aria-hidden="true"></div>
+
+<!-- corner cloud scrolls (ruyi) -->
+<svg class="corner tl" viewBox="0 0 100 100" aria-hidden="true"><path d="M8 60 Q8 20 48 20 Q70 20 70 38 Q70 50 58 50 Q50 50 50 42 Q50 36 56 36 M8 60 Q8 72 20 72 Q30 72 30 62 Q30 56 24 56"/></svg>
+<svg class="corner bl" viewBox="0 0 100 100" aria-hidden="true"><path d="M8 60 Q8 20 48 20 Q70 20 70 38 Q70 50 58 50 Q50 50 50 42 Q50 36 56 36 M8 60 Q8 72 20 72 Q30 72 30 62 Q30 56 24 56"/></svg>
+
+<!-- red seal chop with a pineapple mark -->
+<svg class="seal" viewBox="0 0 64 64" aria-hidden="true">
+  <rect x="2" y="2" width="60" height="60" rx="6" fill="#c8322b"/>
+  <rect x="7" y="7" width="50" height="50" rx="3" fill="none" stroke="#f3d9b1" stroke-width="2"/>
+  <g fill="#f3d9b1">
+    <path d="M32 26 C40 26 43 33 43 40 C43 48 38 53 32 53 C26 53 21 48 21 40 C21 33 24 26 32 26 Z"/>
+    <path d="M32 26 C27 21 22 18 18 16 C24 16 29 19 32 26 Z M32 26 C37 21 42 18 46 16 C40 16 35 19 32 26 Z M32 26 C30 20 30 14 32 9 C34 14 34 20 32 26 Z"/>
+  </g>
+  <path d="M26 34 L32 29 L38 34 L32 39 Z M26 46 L32 41 L38 46 L32 51 Z M21 40 L26 35 M43 40 L38 35 M21 40 L26 45 M43 40 L38 45" fill="none" stroke="#c8322b" stroke-width="1.6"/>
+</svg>
+
+<button class="theme-btn" id="themeBtn" type="button" aria-label="Switch to light theme">
+  <svg class="ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  <svg class="ico-moon" viewBox="0 0 24 24"><path d="M21 13.2A8.5 8.5 0 0 1 10.8 3a8.5 8.5 0 1 0 10.2 10.2z"/></svg>
+</button>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="lantern-shape">
+      <line x1="50" y1="0" x2="50" y2="26" stroke="#d9a441" stroke-width="2"/>
+      <rect x="36" y="24" width="28" height="9" rx="2" fill="#d9a441"/>
+      <ellipse cx="50" cy="78" rx="40" ry="44" fill="#d8322c"/>
+      <ellipse cx="50" cy="78" rx="40" ry="44" fill="url(#lg)"/>
+      <path d="M50 34 V122 M30 38 Q22 78 30 118 M70 38 Q78 78 70 118 M15 54 Q10 78 15 102 M85 54 Q90 78 85 102" fill="none" stroke="#f3c15a" stroke-opacity=".6" stroke-width="1.5"/>
+      <rect x="36" y="118" width="28" height="9" rx="2" fill="#d9a441"/>
+      <line x1="50" y1="127" x2="50" y2="142" stroke="#d9a441" stroke-width="2"/>
+      <path d="M44 142 Q50 168 56 142 M46 142 Q50 162 54 142" fill="none" stroke="#f3c15a" stroke-width="2"/>
+      <circle cx="50" cy="142" r="3.5" fill="#f3c15a"/>
+    </g>
+    <radialGradient id="lg" cx="40%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#ff7a5e" stop-opacity=".9"/><stop offset=".6" stop-color="#d8322c" stop-opacity="0"/><stop offset="1" stop-color="#7a1210" stop-opacity=".7"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- Sky by Singapore time -------------------------------------------
+  // Palette keyframes by hour; everything in between is interpolated.
+  const KEYS = ['sky-top', 'sky-mid', 'sky-low', 'horizon', 'water', 'water-deep', 'city', 'city-far', 'window', 'petal', 'petal-2'];
+  const NUMS = ['star-opacity', 'moon-opacity', 'sun-opacity', 'lantern-glow'];
+  const NIGHT  = { h: 0,    c: ['#070a1f', '#141a4a', '#3a2a5c', '#c2607a', '#0d1540', '#05081c', '#0a0c22', '#1d1f4d', '#ffd98a', '#c77dff', '#ff9ec4'], n: [1, 1, 0, .85], mote: '255,207,107' };
+  const DAWN   = { h: 6.3,  c: ['#2a2f6e', '#7a6aa8', '#f2a37c', '#ffd1a3', '#3b4a8a', '#1a2150', '#2a2f52', '#5d5f8f', '#ffe9b8', '#d58bff', '#ffa8cc'], n: [.35, .3, .55, .6], mote: '255,220,160' };
+  const MORN   = { h: 8,    c: ['#79bff0', '#bfe0f8', '#ffe6c8', '#ffd1a6', '#79b3dc', '#4a8bbd', '#4a6a92', '#9ab8d6', '#ffffff', '#b65fe6', '#ff7fb0'], n: [0, 0, 1, .35], mote: '255,255,255' };
+  const NOON   = { h: 12.5, c: ['#8ecbf2', '#cfe7fa', '#ffe3c2', '#ffb98a', '#7fb8de', '#4e8fc0', '#4f6b8f', '#9bb7d4', '#ffffff', '#b65fe6', '#ff7fb0'], n: [0, 0, 1, .3], mote: '255,255,255' };
+  const GOLDEN = { h: 17.5, c: ['#6fa7dc', '#e2b78f', '#ffb16b', '#ff8c5a', '#6a93c0', '#3b6a9c', '#3a4a6e', '#8794b8', '#fff2c4', '#c56ff0', '#ff8fbc'], n: [0, 0, 1, .45], mote: '255,230,170' };
+  const DUSK   = { h: 19.2, c: ['#1d1f58', '#5a3d82', '#c46a7e', '#ff9a6a', '#2a2f6a', '#141a44', '#161a3a', '#3b3b70', '#ffdd9a', '#cf7dff', '#ff9ac4'], n: [.5, .6, .35, .75], mote: '255,210,130' };
+  const LATE   = { h: 20.6, c: NIGHT.c, n: NIGHT.n, mote: NIGHT.mote };
+  const FRAMES = [NIGHT, DAWN, MORN, NOON, GOLDEN, DUSK, LATE, { ...NIGHT, h: 24 }];
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const mixHex = (a, b, t) => '#' + hex(a).map((v, i) => Math.round(v + (hex(b)[i] - v) * t).toString(16).padStart(2, '0')).join('');
+  const mixRgb = (a, b, t) => a.split(',').map((v, i) => Math.round(+v + (+b.split(',')[i] - v) * t)).join(',');
+  const ease = (t) => t * t * (3 - 2 * t);
+
+  function sgHour() {
+    const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Singapore', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date());
+    const g = (k) => +p.find((x) => x.type === k).value;
+    return (g('hour') % 24) + g('minute') / 60;
+  }
+  function paletteAt(h) {
+    let i = 0; while (FRAMES[i + 1].h <= h) i++;
+    const a = FRAMES[i], b = FRAMES[i + 1], t = ease((h - a.h) / (b.h - a.h));
+    return { c: a.c.map((v, k) => mixHex(v, b.c[k], t)), n: a.n.map((v, k) => v + (b.n[k] - v) * t), mote: mixRgb(a.mote, b.mote, t) };
+  }
+  // Lunar phase 0..1 (0 = new, .5 = full) from a known new moon.
+  function moonPhase() {
+    const synodic = 29.530588853, ref = Date.UTC(2000, 0, 6, 18, 14);
+    return (((Date.now() - ref) / 864e5) % synodic + synodic) % synodic / synodic;
+  }
+
+  const btn = document.getElementById('themeBtn');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  let override = null;
+  try { override = localStorage.getItem('theme'); } catch (e) {}
+
+  function paint() {
+    const dbg = new URLSearchParams(location.search).get('h');  // ?h=18.5 previews that hour
+    const h = dbg != null ? +dbg % 24 : override === 'light' ? 12.5 : override === 'dark' ? 0 : sgHour();
+    const pal = paletteAt(h);
+    KEYS.forEach((k, i) => root.style.setProperty('--' + k, pal.c[i]));
+    NUMS.forEach((k, i) => root.style.setProperty('--' + k, pal.n[i].toFixed(3)));
+    root.style.setProperty('--mote', pal.mote);
+    // sun arc: rises east (left) 6:50, sets west (right) 19:05; moon takes the opposite half
+    const sunT = (h - 6.83) / (19.08 - 6.83);
+    const arc = (t) => ({ x: 12 + t * 76, y: 78 - Math.sin(Math.PI * Math.min(1, Math.max(0, t))) * 68 });
+    const s = arc(sunT), m = arc(((h + 12) % 24 - 6.83) / (19.08 - 6.83));
+    root.style.setProperty('--sun-x', s.x + '%'); root.style.setProperty('--sun-y', s.y + '%');
+    root.style.setProperty('--moon-x', m.x + '%'); root.style.setProperty('--moon-y', m.y + '%');
+    const ph = moonPhase();                       // waxing: shadow slides off to the left; waning: it returns from the right
+    root.style.setProperty('--phase-x', (ph < .5 ? -(ph / .5) * 105 : (1 - (ph - .5) / .5) * 105).toFixed(1) + '%');
+    const light = pal.n[2] > .5;
+    root.dataset.theme = light ? 'light' : 'dark';
+    btn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+    meta.setAttribute('content', pal.c[0]);
+  }
+  paint();
+  setInterval(paint, 60000);
+  btn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    const auto = paletteAt(sgHour()).n[2] > .5 ? 'light' : 'dark';
+    override = next === auto ? null : next;       // back to the clock when it agrees
+    try { override ? localStorage.setItem('theme', override) : localStorage.removeItem('theme'); } catch (e) {}
+    paint();
+  });
+
+  // Stars
+  const stars = document.getElementById('stars');
+  const sf = document.createDocumentFragment();
+  for (let i = 0; i < 110; i++) {
+    const s = document.createElement('i');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 62 + '%';
+    const size = Math.random() < .15 ? 3 : 2;
+    s.style.width = s.style.height = size + 'px';
+    s.style.setProperty('--d', (2 + Math.random() * 4).toFixed(2) + 's');
+    s.style.setProperty('--delay', (-Math.random() * 6).toFixed(2) + 's');
+    sf.appendChild(s);
+  }
+  stars.appendChild(sf);
+
+  // Orchid and blossom petals
+  const petals = document.getElementById('petals');
+  const pf = document.createDocumentFragment();
+  const petalSvg = (c) => `<svg viewBox="0 0 14 20"><path d="M7 0 C13 4 14 12 7 20 C0 12 1 4 7 0 Z" fill="${c}" fill-opacity=".85"/></svg>`;
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('span');
+    p.className = 'petal';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.setProperty('--t', (14 + Math.random() * 12).toFixed(1) + 's');
+    p.style.setProperty('--delay', (-Math.random() * 26).toFixed(1) + 's');
+    p.style.setProperty('--r', (3 + Math.random() * 4).toFixed(1) + 's');
+    p.style.setProperty('--dx', (Math.random() * 160 - 60).toFixed(0) + 'px');
+    const sc = .7 + Math.random() * .8;
+    p.style.width = 14 * sc + 'px'; p.style.height = 20 * sc + 'px';
+    p.innerHTML = petalSvg(Math.random() < .55 ? 'var(--petal)' : 'var(--petal-2)');
+    pf.appendChild(p);
+  }
+  petals.appendChild(pf);
+
+  // ---- Parallax on pointer and device tilt -----------------------------
+  const layers = [...document.querySelectorAll('.layer[data-depth]')];
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  let tx = 0, ty = 0, cx = 0, cy = 0;
+  function tick() {
+    cx += (tx - cx) * .06; cy += (ty - cy) * .06;
+    for (const l of layers) {
+      const d = +l.dataset.depth;
+      l.style.transform = `translate3d(${(cx * d).toFixed(2)}px, ${(cy * d).toFixed(2)}px, 0)`;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ---- Sensors (phones): gyro tilt, compass, shake, ambient light ------
+  const pine = document.querySelector('.pineapple');
+  const petalsEl = document.getElementById('petals');
+  let kick = 0;                                   // extra drift handed to the motes by a shake
+  function onOrientation(e) {
+    if (e.gamma == null) return;
+    const portrait = innerHeight >= innerWidth;
+    const roll = portrait ? e.gamma : e.beta;      // left/right lean in the current orientation
+    const pitch = portrait ? e.beta - 45 : -e.gamma;
+    tx = clamp(roll / 30, -1, 1) * -10;
+    ty = clamp(pitch / 30, -1, 1) * -6;
+    root.style.setProperty('--lean', (clamp(roll, -40, 40) * -.45).toFixed(1) + 'deg');   // lanterns hang toward gravity
+    root.style.setProperty('--wind', (clamp(roll, -40, 40) * 1.2).toFixed(0) + 'px');     // petals drift downhill
+    const heading = e.webkitCompassHeading != null ? e.webkitCompassHeading : (e.alpha != null ? 360 - e.alpha : null);
+    if (heading != null) root.style.setProperty('--heading', (heading * -.15).toFixed(2) + 'deg'); // the sky turns with you
+  }
+  let lastShake = 0;
+  function onMotion(e) {
+    const a = e.acceleration || {}; const g = Math.hypot(a.x || 0, a.y || 0, a.z || 0);
+    if (g > 16 && performance.now() - lastShake > 1800) {
+      lastShake = performance.now();
+      kick = 3;
+      pine.classList.remove('wobble'); void pine.offsetWidth; pine.classList.add('wobble');
+      for (let i = 0; i < 12; i++) {              // a burst of petals from the crown
+        const p = document.createElement('span');
+        p.className = 'petal burst';
+        const ang = Math.random() * Math.PI * 2, dist = 90 + Math.random() * 180;
+        p.style.setProperty('--bx', (Math.cos(ang) * dist).toFixed(0) + 'px');
+        p.style.setProperty('--by', (Math.sin(ang) * dist - 120).toFixed(0) + 'px');
+        p.innerHTML = petalSvg(Math.random() < .5 ? 'var(--petal)' : 'var(--petal-2)');
+        petalsEl.appendChild(p);
+        setTimeout(() => p.remove(), 2800);
+      }
+    }
+  }
+  function startSensors() {
+    addEventListener('deviceorientation', onOrientation, { passive: true });
+    addEventListener('devicemotion', onMotion, { passive: true });
+    if ('AmbientLightSensor' in window) {
+      try {
+        const als = new AmbientLightSensor({ frequency: 1 });
+        als.addEventListener('reading', () => root.style.setProperty('--ambient', clamp((als.illuminance - 300) / 4000, 0, .22).toFixed(3)));
+        als.start();
+      } catch (e) {}
+    }
+  }
+  if (!reduce) {
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      tx = (e.clientX / innerWidth - .5) * -8;
+      ty = (e.clientY / innerHeight - .5) * -6;
+    }, { passive: true });
+    for (const l of layers) l.style.transition = 'none';
+    tick();
+    const DOE = window.DeviceOrientationEvent, DME = window.DeviceMotionEvent;
+    if (DOE && typeof DOE.requestPermission === 'function') {
+      // iOS: motion access needs a gesture, so the first tap anywhere asks for it
+      const ask = () => {
+        Promise.all([DOE.requestPermission(), DME && DME.requestPermission ? DME.requestPermission() : 'granted'])
+          .then((r) => { if (r[0] === 'granted') startSensors(); }).catch(() => {});
+        removeEventListener('touchend', ask); removeEventListener('click', ask);
+      };
+      addEventListener('touchend', ask, { passive: true }); addEventListener('click', ask);
+    } else if (DOE) {
+      startSensors();
+    }
+  }
+
+  // Motes: fireflies at night, dust in daylight
+  const cv = document.getElementById('motes');
+  const ctx = cv.getContext('2d');
+  let W, H, motes = [];
+  function resize() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(innerWidth * innerHeight / 22000);
+    motes = Array.from({ length: n }, () => ({
+      x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+      r: .8 + Math.random() * 2.2, a: Math.random() * Math.PI * 2,
+      s: .1 + Math.random() * .25, p: Math.random() * Math.PI * 2
+    }));
+  }
+  let hidden = document.hidden;
+  document.addEventListener('visibilitychange', () => { hidden = document.hidden; if (!hidden) draw(); });
+  function draw() {
+    if (hidden) return;
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    const rgb = getComputedStyle(root).getPropertyValue('--mote').trim() || '255,207,107';
+    const t = performance.now() / 1000;
+    for (const m of motes) {
+      if (!reduce) {
+        m.a += (Math.random() - .5) * (.08 + kick * .3);
+        const sp = m.s * (1 + kick * 4);
+        m.x += Math.cos(m.a) * sp; m.y += Math.sin(m.a) * sp - .05;
+        if (m.x < -10) m.x = innerWidth + 10; if (m.x > innerWidth + 10) m.x = -10;
+        if (m.y < -10) m.y = innerHeight + 10; if (m.y > innerHeight + 10) m.y = -10;
+      }
+      const al = .08 + .3 * (Math.sin(t * 1.3 + m.p) * .5 + .5) * (m.r / 3);
+      ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${rgb},${al.toFixed(3)})`; ctx.fill();
+    }
+    kick *= .96;
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  addEventListener('resize', resize, { passive: true });
+  resize(); draw();
+})();
+</script>
+</body>
+</html>
